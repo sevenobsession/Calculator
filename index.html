@@ -1,27 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Albion Craft Calc</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Albion Craft Calc</title>
+  <style>
+    /* ПОВНИЙ CSS ДИЗАЙН */
+    body {
+      background-color: #0d0e10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 50px;
+      font-family: "Inter", sans-serif;
+      gap: 10px;
+      color: #c1c2c5;
+    }
+
+    .container {
+      display: flex;
+      gap: 12px;
+      background-color: #1a1b1e;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid #2c2e33;
+      width: 900px;
+      align-items: center;
+      position: relative;
+      box-sizing: border-box;
+    }
+
+    .secondary-row {
+      margin-top: 32px;
+      width: 900px !important;
+      max-width: 900px !important;
+    }
+
+    /* Прибираємо стрілки */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type=number] { -moz-appearance: textfield; }
+
+    .input-field, .select-trigger {
+      background-color: #25262b;
+      color: #c1c2c5;
+      border: 1px solid #373a40;
+      padding: 0 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      height: 45px;
+      box-sizing: border-box;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    /* Пропорції для Fee та іншого */
+    #city-dropdown { flex: 1.4 !important; }
+    #food-dropdown { flex: 1.8 !important; }
+    .fee-input-wrapper { flex: 0.7 !important; min-width: 95px !important; display: flex; gap: 5px; }
+    #craft-fee { background: transparent; border: none; color: white; outline: none; width: 100%; }
+
+    .field-group {
+      background-color: #25262b;
+      border: 1px solid #373a40;
+      border-radius: 8px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      flex: 0.8;
+    }
+
+    .field-label { font-size: 12px; margin-left: 8px; white-space: nowrap; }
+
+    /* Салати та іконки */
+    .option img, .select-trigger img {
+      width: 24px !important;
+      height: 24px !important;
+      object-fit: contain !important;
+    }
+
+    .custom-select { position: relative; flex: 1; }
+    .options {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background-color: #25262b;
+      border: 1px solid #562c89;
+      border-radius: 8px;
+      z-index: 999;
+      display: none;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .custom-select.active .options { display: block !important; }
+    .option { padding: 10px 16px; cursor: pointer; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #373a40; }
+    .option:hover { background-color: #562c89; color: white; }
+
+    /* Тумблери */
+    .switch { position: relative; width: 32px; height: 18px; flex-shrink: 0; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #373a40; transition: 0.2s; border-radius: 20px; }
+    .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: #c1c2c5; transition: 0.2s; border-radius: 50%; }
+    input:checked + .slider { background-color: #562c89; }
+    input:checked + .slider:before { transform: translateX(14px); }
+  </style>
 </head>
 <body>
 
 <div id="main-container" class="container">
-  <div class="search-wrapper" id="item-search-wrapper">
-    <div id="selected-icon-container" class="input-icon-overlay"></div>
-    <input type="text" placeholder="Search any items" class="input-field search-input">
-    <div id="search-results" class="search-results-container"></div>
+  <div class="search-wrapper" style="flex: 2;">
+    <input type="text" placeholder="Search any items" class="input-field">
   </div>
 
   <div class="custom-select" id="tier-dropdown">
-    <div class="select-trigger">
-      <span id="tier-value">Select tier</span>
-      <span class="arrow">v</span>
-    </div>
-    <div class="options" id="tier-options">
-      <div class="option" data-value="3">T3</div>
+    <div class="select-trigger"><span>Select tier</span><span class="arrow">v</span></div>
+    <div class="options">
       <div class="option" data-value="4">T4</div>
       <div class="option" data-value="5">T5</div>
       <div class="option" data-value="6">T6</div>
@@ -30,32 +130,84 @@
     </div>
   </div>
 
-  <div class="custom-select" id="enchant-dropdown">
-    <div class="select-trigger">
-      <span id="enchant-value">Enchant</span>
-      <span class="arrow">v</span>
-    </div>
-    <div class="options" id="enchant-options"></div>
-  </div>
-
-  <input type="number" placeholder="Quantity" class="input-field qty-input">
+  <input type="number" placeholder="Quantity" class="input-field" style="flex: 0.5;">
 </div>
 
 <div id="craft-settings-container" class="container secondary-row">
-  <div class="field-group toggle-group">
-    <label class="switch">
-      <input type="checkbox" id="focus-toggle">
-      <span class="slider"></span>
-    </label>
+  <div class="field-group">
+    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
     <span class="field-label">Use focus</span>
   </div>
 
-  <div class="field-group toggle-group">
-    <label class="switch">
-      <input type="checkbox" id="premium-toggle" checked>
-      <span class="slider"></span>
-    </label>
+  <div class="field-group">
+    <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
     <span class="field-label">Premium</span>
   </div>
 
-  <div
+  <div class="custom-select" id="city-dropdown">
+    <div class="select-trigger"><span>Select city</span><span class="arrow">v</span></div>
+    <div class="options" id="city-options"></div>
+  </div>
+
+  <div class="custom-select" id="food-dropdown">
+    <div class="select-trigger"><span>Choose eat</span><span class="arrow">v</span></div>
+    <div class="options" id="food-options"></div>
+  </div>
+
+  <div class="input-field fee-input-wrapper">
+    <span class="fee-prefix">Fee:</span>
+    <input type="number" id="craft-fee" placeholder="0">
+  </div>
+</div>
+
+<script>
+  /* ПОВНИЙ JS КОД */
+  let itemDatabase = [];
+
+  fetch("https://raw.githubusercontent.com/ao-data/ao-bin-dumps/master/formatted/items.json")
+    .then(res => res.json())
+    .then(data => {
+      itemDatabase = data.map(i => ({
+        id: i.UniqueName,
+        name: i.LocalizedNames ? i.LocalizedNames["EN-US"] : i.UniqueName
+      }));
+    });
+
+  function updateFoodList() {
+    const cont = document.getElementById("food-options");
+    const salads = itemDatabase.filter(i => i.id.includes("MEAL_SALAD"));
+    cont.innerHTML = salads.map(s => `
+      <div class="option" data-value="${s.id}">
+        <img src="https://render.albiononline.com/v1/item/${s.id}.png?size=32">
+        <span>${s.name}</span>
+      </div>`).join("");
+  }
+
+  function setupDropdown(id) {
+    const dropdown = document.getElementById(id);
+    const trigger = dropdown.querySelector(".select-trigger");
+
+    trigger.addEventListener("click", (e) => {
+      e.stopPropagation();
+      document.querySelectorAll(".custom-select").forEach(el => el !== dropdown && el.classList.remove("active"));
+      dropdown.classList.toggle("active");
+      if (id === "food-dropdown") updateFoodList();
+    });
+
+    dropdown.addEventListener("click", (e) => {
+      const opt = e.target.closest(".option");
+      if (opt) {
+        dropdown.querySelector("span").innerHTML = opt.innerHTML;
+        dropdown.classList.remove("active");
+      }
+    });
+  }
+
+  setupDropdown("tier-dropdown");
+  setupDropdown("city-dropdown");
+  setupDropdown("food-dropdown");
+
+  window.onclick = () => document.querySelectorAll(".custom-select").forEach(el => el.classList.remove("active"));
+</script>
+</body>
+</html>
