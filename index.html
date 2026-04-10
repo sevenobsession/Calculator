@@ -1,3 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Albion Craft Calc</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
 <div id="main-container" class="container">
   <div class="search-wrapper" id="item-search-wrapper">
     <div id="selected-icon-container" class="input-icon-overlay"></div>
@@ -32,7 +42,6 @@
 </div>
 
 <div id="craft-settings-container" class="container secondary-row">
-
   <div class="field-group toggle-group">
     <label class="switch">
       <input type="checkbox" id="focus-toggle">
@@ -49,90 +58,4 @@
     <span class="field-label">Premium</span>
   </div>
 
-  <div class="custom-select" id="city-dropdown" style="flex: 1.5;">
-    <div class="select-trigger">
-      <span id="city-value">Select city/HO</span>
-      <span class="arrow">v</span>
-    </div>
-    <div class="options" id="city-options">
-      <div class="option" data-value="Martlock">Martlock</div>
-      <div class="option" data-value="Thetford">Thetford</div>
-      <div class="option" data-value="Fort Sterling">Fort Sterling</div>
-      <div class="option" data-value="Lymhurst">Lymhurst</div>
-      <div class="option" data-value="Bridgewatch">Bridgewatch</div>
-      <div class="option" data-value="Caerleon">Caerleon</div>
-      <div class="option" data-value="Brecilien">Brecilien</div>
-    </div>
-  </div>
-
-  <div class="custom-select" id="food-dropdown">
-    <div class="select-trigger">
-      <span id="food-value">Choose<br>eat</span>
-      <span class="arrow">v</span>
-    </div>
-    <div class="options" id="food-options"></div>
-  </div>
-
-  <div class="custom-select" id="daily-dropdown">
-    <div class="select-trigger">
-      <span id="daily-value">Select<br>bonus</span>
-      <span class="arrow">v</span>
-    </div>
-    <div class="options">
-      <div class="option" data-value="0">0% Bonus</div>
-      <div class="option" data-value="10">10% Bonus</div>
-      <div class="option" data-value="20">20% Bonus</div>
-    </div>
-  </div>
-
-  <div class="input-field fee-input-wrapper">
-    <span class="fee-prefix">Fee:</span>
-    <input type="number" id="craft-fee" placeholder="0">
-  </div>
-</div>
-
-<style>
-  /* Стилі для розділення та ідентичного вигляду */
-  .secondary-row {
-    margin-top: 32px;
-  }
-
-  .field-group {
-    background-color: #25262b;
-    border: 1px solid #373a40;
-    border-radius: 8px;
-    height: 45px;
-    display: flex;
-    align-items: center;
-    padding: 0 12px;
-    flex: 1;
-  }
-
-  .field-label {
-    color: #c1c2c5;
-    font-size: 13px;
-    margin-left: 10px;
-    white-space: nowrap;
-  }
-
-  .fee-input-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    flex: 1;
-  }
-
-  .fee-prefix {
-    color: #5c5f66;
-    font-size: 13px;
-  }
-
-  /* Кольори тумблерів */
-  #focus-toggle:checked+.slider {
-    background-color: #562C89;
-  }
-
-  #premium-toggle:checked+.slider {
-    background-color: #40c057;
-  }
-</style>
+  <div
