@@ -1,0 +1,468 @@
+body {
+  background-color: #0d0e10;
+  display: flex;
+  flex-direction: column; /* ЗМІНЕНО: тепер блоки стають один під одним */
+  align-items: center; /* Центрування по горизонталі */
+  padding-top: 50px;
+  font-family: "Inter", sans-serif;
+  gap: 10px;
+}
+
+.container {
+  display: flex;
+  gap: 12px;
+  background-color: #1a1b1e;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #2c2e33;
+  width: 900px;
+  align-items: center;
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* Спільна база для всіх полів */
+.input-field,
+.select-trigger {
+  background-color: #25262b;
+  color: #c1c2c5;
+  border: 1px solid #373a40;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  height: 45px;
+  box-sizing: border-box;
+  transition: all 0.2s;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Специфічне вирівнювання для селекта, щоб стрілка була справа */
+.select-trigger {
+  justify-content: space-between;
+}
+
+/* Прибираємо дефолтні рамки інпуту */
+input.input-field {
+  outline: none;
+  cursor: text;
+}
+
+/* Ефект фокусу */
+.input-field:focus,
+.custom-select.active .select-trigger {
+  border-color: #562c89;
+}
+
+/* Стрілка */
+.arrow {
+  color: #562c89;
+  font-weight: bold;
+  font-size: 12px;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+/* Випадаючі меню */
+.search-results-container,
+.options {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background-color: #25262b;
+  border: 1px solid #562c89;
+  border-radius: 8px;
+  z-index: 999;
+  display: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* ЗМУШУЄМО ВСІ МЕНЮ ВІДКРИВАТИСЯ ПРИ КЛАСІ ACTIVE */
+.custom-select.active .options {
+  display: block !important;
+}
+
+/* Елементи списків */
+.search-result-item,
+.option {
+  padding: 10px 16px;
+  color: #c1c2c5;
+  cursor: pointer;
+  border-bottom: 1px solid #373a40;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-result-item:hover,
+.option:hover {
+  background-color: #562c89;
+  color: white;
+}
+
+.search-result-item:last-child,
+.option:last-child {
+  border-bottom: none;
+}
+
+/* Контейнери */
+.search-wrapper {
+  position: relative;
+  flex: 2;
+  display: flex;
+  align-items: center;
+}
+.custom-select {
+  position: relative;
+  flex: 1;
+  user-select: none;
+}
+.qty-input {
+  flex: 0.5;
+}
+
+/* Іконка всередині пошуку */
+.input-icon-overlay {
+  position: absolute;
+  left: 12px;
+  display: none;
+  align-items: center;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.input-icon-overlay img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.search-input.has-icon {
+  padding-left: 48px !important;
+}
+
+/* Скролбар */
+.search-results-container {
+  max-height: 250px;
+  overflow-y: auto;
+}
+.search-results-container::-webkit-scrollbar {
+  width: 4px;
+}
+.search-results-container::-webkit-scrollbar-thumb {
+  background: #562c89;
+  border-radius: 10px;
+}
+
+/* --- ДОДАТКОВІ СТИЛІ ДЛЯ ДРУГОГО РЯДКА --- */
+
+.switch-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.switch {
+  position: relative;
+  width: 32px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* СЛАЙДЕРИ: ховаємо інпут, щоб не ламав верстку */
+.switch input {
+  position: absolute;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  z-index: -1;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+}
+
+/* Колір фону при активації */
+.switch input:checked + .slider {
+  background-color: #562c89 !important;
+}
+
+/* Рух кружечка */
+.switch input:checked + .slider:before {
+  transform: translateX(14px) !important;
+  -webkit-transform: translateX(14px) !important;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #373a40;
+  transition: 0.2s;
+  border-radius: 20px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 12px;
+  width: 12px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #c1c2c5;
+  transition: 0.2s;
+  border-radius: 50%;
+}
+
+/* ПОЛЯ ВВОДУ (FEE ТА ІНШІ) */
+.fee-input-wrapper input,
+.fee-field input,
+input.fee-field {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  color: #c1c2c5 !important;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  box-shadow: none !important;
+}
+
+/* Вирівнювання тексту для селекторів у два рядки */
+.select-trigger span:first-child {
+  line-height: 1.1;
+  text-align: left;
+}
+.city-search-box {
+  padding: 10px 16px;
+  background: #1a1b1e;
+  border-bottom: 1px solid #373a40;
+  display: flex;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Сама textarea (пошук) */
+.city-inner-search {
+  width: 100%;
+  min-height: 24px; /* Початкова висота в один рядок */
+  max-height: 200px; /* Щоб вікно не розтягнуло занадто сильно */
+  background: transparent;
+  border: none; /* Прибираємо рамку, як ти просив */
+  color: #ffffff; /* Білий текст, щоб було видно */
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  resize: none; /* Забороняємо ручне розтягування */
+  outline: none; /* Прибираємо синю рамку при фокусі */
+  padding: 0; /* Прибираємо внутрішні паддінги, щоб текст не стрибав */
+  overflow: hidden; /* Ховаємо скролл, бо вона резинова */
+  box-sizing: border-box;
+}
+
+/* Плейсхолдер для пошуку міст */
+.city-inner-search::placeholder {
+  color: #5c5f66;
+}
+
+/* Тег RRR (відсотки справа) */
+.rrr-tag {
+  margin-left: auto;
+  color: #ff5252;
+  font-weight: 600;
+  font-size: 13px;
+  padding-left: 10px;
+}
+
+/* Обгортка для результатів під пошуком */
+.city-list-items {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Стиль скроллбару для списку міст (під твій дизайн) */
+.city-list-items::-webkit-scrollbar {
+  width: 4px;
+}
+
+.city-list-items::-webkit-scrollbar-thumb {
+  background: #562c89;
+  border-radius: 10px;
+}
+.food-results-list {
+  max-height: 250px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Стилізація скролбару для салатів */
+.food-results-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.food-results-list::-webkit-scrollbar-thumb {
+  background: #562c89;
+  border-radius: 10px;
+}
+
+/* Щоб іконки салатів у списку не розтягувалися */
+.option img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* Стиль для textarea пошуку всередині міст та салатів */
+.city-inner-search {
+  width: 100%;
+  min-height: 20px;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  resize: none;
+  outline: none;
+  padding: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Контейнер самого поля пошуку */
+.city-search-box {
+  padding: 10px 16px;
+  background: #1a1b1e;
+  border-bottom: 1px solid #373a40;
+  display: flex;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Підсвітка тексту при наведенні на салат */
+.option:hover {
+  background-color: #562c89;
+  color: white;
+}
+.secondary-row {
+  margin-top: 32px;
+  display: flex;
+  gap: 12px;
+}
+
+/* Налаштування груп з тумблерами (Focus, Premium) */
+.field-group {
+  background-color: #25262b;
+  border: 1px solid #373a40;
+  border-radius: 8px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  flex: 1; /* Рівна ширина для перемикачів */
+}
+
+.field-label {
+  color: #c1c2c5;
+  font-size: 13px;
+  margin-left: 10px;
+  white-space: nowrap;
+}
+
+/* РОЗШИРЮЄМО МІСТА */
+#city-dropdown {
+  flex: 1.8 !important; 
+}
+
+/* РОЗШИРЮЄМО ЇЖУ */
+#food-dropdown {
+  flex: 1.2 !important;
+}
+
+/* ЗМЕНШУЄМО ПОДАТОК (FEE) */
+.fee-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex: 0.8 !important; /* Робимо вужчим за інші */
+  min-width: 90px;
+  background-color: #25262b;
+  border: 1px solid #373a40;
+  border-radius: 8px;
+  padding: 0 12px;
+  height: 45px;
+}
+
+.fee-prefix {
+  color: #5c5f66;
+  font-size: 13px;
+}
+
+/* Прибираємо внутрішні відступи для тексту в кнопках, щоб влізало більше */
+.select-trigger span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.secondary-row {
+  width: 900px !important;
+  max-width: 900px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  gap: 8px !important; /* Трохи зменшив зазор, щоб усе влізло */
+  padding: 16px !important;
+  overflow: visible !important; /* Щоб меню не обрізалося */
+}
+
+/* 2. НОВІ ПРОПОРЦІЇ (тепер точно влізе) */
+#craft-settings-container > .field-group { flex: 0.7 !important; } /* Focus/Premium */
+#city-dropdown { flex: 1.2 !important; }
+#food-dropdown { flex: 1.8 !important; } /* Даємо максимум місця салату */
+#daily-dropdown { flex: 0.8 !important; }
+.fee-input-wrapper { flex: 0.6 !important; min-width: 85px !important; }
+
+/* 3. ЦЕНТРУВАННЯ В САЛАТІ (Trigger) */
+#food-dropdown .select-trigger {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  height: 45px !important;
+  padding: 0 8px !important;
+}
+
+#food-dropdown .select-trigger img {
+  width: 28px !important; /* Трохи зменшив, щоб не розпирало */
+  height: 28px !important;
+  object-fit: contain !important;
+}
+
+#food-dropdown .select-trigger span {
+  display: flex !important;
+  align-items: center !important;
+  line-height: 1 !important;
+  font-size: 13px !important;
+  white-space: nowrap !important;
+}
+
+/* 4. ФІКС ДЛЯ ШРИФТІВ (щоб не розпирали блоки) */
+.select-trigger span, .field-label, .fee-prefix {
+  font-size: 12px !important;
+}
