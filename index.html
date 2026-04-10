@@ -5,153 +5,117 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Albion Craft Calc</title>
   <style>
-    /* ПОВНИЙ CSS ДИЗАЙН */
-    body {
-      background-color: #0d0e10;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 50px;
-      font-family: "Inter", sans-serif;
-      gap: 10px;
-      color: #c1c2c5;
-    }
+    body { background-color: #0d0e10; display: flex; flex-direction: column; align-items: center; padding-top: 50px; font-family: "Inter", sans-serif; gap: 10px; color: #c1c2c5; margin: 0; }
+    
+    .container { display: flex; gap: 10px; background-color: #1a1b1e; padding: 16px; border-radius: 12px; border: 1px solid #2c2e33; width: 920px; align-items: center; position: relative; box-sizing: border-box; }
+    .secondary-row { margin-top: 20px; }
 
-    .container {
-      display: flex;
-      gap: 12px;
-      background-color: #1a1b1e;
-      padding: 16px;
-      border-radius: 12px;
-      border: 1px solid #2c2e33;
-      width: 900px;
-      align-items: center;
-      position: relative;
-      box-sizing: border-box;
-    }
+    /* Поля вводу та селекти */
+    .input-field, .select-trigger { background-color: #25262b; color: #c1c2c5; border: 1px solid #373a40; padding: 0 12px; border-radius: 8px; font-size: 13px; height: 45px; box-sizing: border-box; cursor: pointer; display: flex; align-items: center; width: 100%; justify-content: space-between; transition: border-color 0.2s; }
+    input.input-field { outline: none; cursor: text; }
+    .input-field:focus, .custom-select.active .select-trigger { border-color: #562c89; }
 
-    .secondary-row {
-      margin-top: 32px;
-      width: 900px !important;
-      max-width: 900px !important;
-    }
+    /* Стрілка */
+    .arrow { color: #562c89; font-weight: bold; font-size: 11px; margin-left: 5px; }
 
-    /* Прибираємо стрілки */
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    input[type=number] { -moz-appearance: textfield; }
+    /* Пропорції елементів (Перший рядок) */
+    .search-wrapper { flex: 2.5; position: relative; }
+    #tier-dropdown { flex: 0.8; }
+    #enchant-dropdown { flex: 1; }
+    .qty-input { flex: 0.6; }
 
-    .input-field, .select-trigger {
-      background-color: #25262b;
-      color: #c1c2c5;
-      border: 1px solid #373a40;
-      padding: 0 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      height: 45px;
-      box-sizing: border-box;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      width: 100%;
-    }
+    /* Пропорції елементів (Другий рядок) */
+    .toggle-group { flex: 0.8; background-color: #25262b; border: 1px solid #373a40; border-radius: 8px; height: 45px; display: flex; align-items: center; padding: 0 10px; }
+    #city-dropdown { flex: 1.5; }
+    #food-dropdown { flex: 2; }
+    #daily-dropdown { flex: 1; }
+    .fee-input-wrapper { flex: 0.8; min-width: 90px; gap: 5px; }
 
-    /* Пропорції для Fee та іншого */
-    #city-dropdown { flex: 1.4 !important; }
-    #food-dropdown { flex: 1.8 !important; }
-    .fee-input-wrapper { flex: 0.7 !important; min-width: 95px !important; display: flex; gap: 5px; }
-    #craft-fee { background: transparent; border: none; color: white; outline: none; width: 100%; }
-
-    .field-group {
-      background-color: #25262b;
-      border: 1px solid #373a40;
-      border-radius: 8px;
-      height: 45px;
-      display: flex;
-      align-items: center;
-      padding: 0 12px;
-      flex: 0.8;
-    }
-
-    .field-label { font-size: 12px; margin-left: 8px; white-space: nowrap; }
-
-    /* Салати та іконки */
-    .option img, .select-trigger img {
-      width: 24px !important;
-      height: 24px !important;
-      object-fit: contain !important;
-    }
-
-    .custom-select { position: relative; flex: 1; }
-    .options {
-      position: absolute;
-      top: calc(100% + 4px);
-      left: 0;
-      right: 0;
-      background-color: #25262b;
-      border: 1px solid #562c89;
-      border-radius: 8px;
-      z-index: 999;
-      display: none;
-      max-height: 300px;
-      overflow-y: auto;
-    }
+    /* Випадаючі списки */
+    .options, .search-results-container { position: absolute; top: calc(100% + 5px); left: 0; right: 0; background-color: #25262b; border: 1px solid #562c89; border-radius: 8px; z-index: 999; display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.5); max-height: 250px; overflow-y: auto; }
     .custom-select.active .options { display: block !important; }
-    .option { padding: 10px 16px; cursor: pointer; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #373a40; }
+    .option, .search-result-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #373a40; display: flex; align-items: center; gap: 10px; font-size: 13px; }
     .option:hover { background-color: #562c89; color: white; }
+    .option img { width: 24px; height: 24px; object-fit: contain; }
 
     /* Тумблери */
     .switch { position: relative; width: 32px; height: 18px; flex-shrink: 0; }
-    .switch input { opacity: 0; width: 0; height: 0; }
+    .switch input { opacity: 0; width: 0; height: 0; position: absolute; }
     .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #373a40; transition: 0.2s; border-radius: 20px; }
     .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: #c1c2c5; transition: 0.2s; border-radius: 50%; }
     input:checked + .slider { background-color: #562c89; }
     input:checked + .slider:before { transform: translateX(14px); }
+    .field-label { font-size: 12px; margin-left: 8px; white-space: nowrap; }
+
+    /* Поле податку */
+    #craft-fee { background: transparent; border: none; color: #c1c2c5; outline: none; width: 100%; font-size: 13px; }
+    .fee-prefix { color: #5c5f66; font-size: 12px; }
+
+    /* Пошук всередині міст/їжі */
+    .inner-search { width: 100%; padding: 8px; background: #1a1b1e; border: none; border-bottom: 1px solid #373a40; color: white; outline: none; position: sticky; top: 0; }
   </style>
 </head>
 <body>
 
-<div id="main-container" class="container">
-  <div class="search-wrapper" style="flex: 2;">
-    <input type="text" placeholder="Search any items" class="input-field">
+<div class="container">
+  <div class="search-wrapper">
+    <input type="text" placeholder="Search any items" class="input-field" id="item-search">
+    <div id="search-results" class="search-results-container"></div>
   </div>
 
   <div class="custom-select" id="tier-dropdown">
-    <div class="select-trigger"><span>Select tier</span><span class="arrow">v</span></div>
+    <div class="select-trigger"><span>T4</span><span class="arrow">v</span></div>
     <div class="options">
-      <div class="option" data-value="4">T4</div>
-      <div class="option" data-value="5">T5</div>
-      <div class="option" data-value="6">T6</div>
-      <div class="option" data-value="7">T7</div>
+      <div class="option" data-value="4">T4</div><div class="option" data-value="5">T5</div>
+      <div class="option" data-value="6">T6</div><div class="option" data-value="7">T7</div>
       <div class="option" data-value="8">T8</div>
     </div>
   </div>
 
-  <input type="number" placeholder="Quantity" class="input-field" style="flex: 0.5;">
-</div>
-
-<div id="craft-settings-container" class="container secondary-row">
-  <div class="field-group">
-    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
-    <span class="field-label">Use focus</span>
+  <div class="custom-select" id="enchant-dropdown">
+    <div class="select-trigger"><span>Enchant</span><span class="arrow">v</span></div>
+    <div class="options">
+      <div class="option" data-value="0">.0</div><div class="option" data-value="1">.1</div>
+      <div class="option" data-value="2">.2</div><div class="option" data-value="3">.3</div>
+      <div class="option" data-value="4">.4</div>
+    </div>
   </div>
 
-  <div class="field-group">
-    <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+  <input type="number" placeholder="Qty" class="input-field qty-input" value="1">
+</div>
+
+<div class="container secondary-row">
+  <div class="toggle-group">
+    <label class="switch"><input type="checkbox" id="focus-toggle"><span class="slider"></span></label>
+    <span class="field-label">Focus</span>
+  </div>
+  <div class="toggle-group">
+    <label class="switch"><input type="checkbox" id="premium-toggle" checked><span class="slider"></span></label>
     <span class="field-label">Premium</span>
   </div>
 
   <div class="custom-select" id="city-dropdown">
     <div class="select-trigger"><span>Select city</span><span class="arrow">v</span></div>
-    <div class="options" id="city-options"></div>
+    <div class="options">
+        <input type="text" class="inner-search" placeholder="Filter city...">
+        <div class="option">Martlock</div><div class="option">Thetford</div>
+        <div class="option">Fort Sterling</div><div class="option">Lymhurst</div>
+        <div class="option">Bridgewatch</div><div class="option">Caerleon</div>
+    </div>
   </div>
 
   <div class="custom-select" id="food-dropdown">
-    <div class="select-trigger"><span>Choose eat</span><span class="arrow">v</span></div>
-    <div class="options" id="food-options"></div>
+    <div class="select-trigger"><span>Choose food</span><span class="arrow">v</span></div>
+    <div class="options" id="food-list"></div>
+  </div>
+
+  <div class="custom-select" id="daily-dropdown">
+    <div class="select-trigger"><span>Bonus</span><span class="arrow">v</span></div>
+    <div class="options">
+      <div class="option" data-value="0">0% Bonus</div>
+      <div class="option" data-value="10">10% Bonus</div>
+      <div class="option" data-value="20">20% Bonus</div>
+    </div>
   </div>
 
   <div class="input-field fee-input-wrapper">
@@ -161,53 +125,42 @@
 </div>
 
 <script>
-  /* ПОВНИЙ JS КОД */
-  let itemDatabase = [];
-
+  let items = [];
   fetch("https://raw.githubusercontent.com/ao-data/ao-bin-dumps/master/formatted/items.json")
-    .then(res => res.json())
-    .then(data => {
-      itemDatabase = data.map(i => ({
-        id: i.UniqueName,
-        name: i.LocalizedNames ? i.LocalizedNames["EN-US"] : i.UniqueName
-      }));
+    .then(r => r.json()).then(data => {
+      items = data.map(i => ({ id: i.UniqueName, name: i.LocalizedNames ? i.LocalizedNames["EN-US"] : i.UniqueName }));
     });
 
-  function updateFoodList() {
-    const cont = document.getElementById("food-options");
-    const salads = itemDatabase.filter(i => i.id.includes("MEAL_SALAD"));
-    cont.innerHTML = salads.map(s => `
+  function setupDropdown(id) {
+    const el = document.getElementById(id);
+    const trigger = el.querySelector(".select-trigger");
+    trigger.onclick = (e) => {
+      e.stopPropagation();
+      document.querySelectorAll(".custom-select").forEach(s => s !== el && s.classList.remove("active"));
+      el.classList.toggle("active");
+      if(id === 'food-dropdown' && el.classList.contains('active')) renderFood();
+    };
+    el.onclick = (e) => {
+      const opt = e.target.closest(".option");
+      if(opt) {
+        trigger.querySelector("span").innerHTML = opt.innerHTML;
+        el.classList.remove("active");
+      }
+    };
+  }
+
+  function renderFood() {
+    const list = document.getElementById("food-list");
+    const salads = items.filter(i => i.id.includes("MEAL_SALAD"));
+    list.innerHTML = salads.map(s => `
       <div class="option" data-value="${s.id}">
         <img src="https://render.albiononline.com/v1/item/${s.id}.png?size=32">
         <span>${s.name}</span>
       </div>`).join("");
   }
 
-  function setupDropdown(id) {
-    const dropdown = document.getElementById(id);
-    const trigger = dropdown.querySelector(".select-trigger");
-
-    trigger.addEventListener("click", (e) => {
-      e.stopPropagation();
-      document.querySelectorAll(".custom-select").forEach(el => el !== dropdown && el.classList.remove("active"));
-      dropdown.classList.toggle("active");
-      if (id === "food-dropdown") updateFoodList();
-    });
-
-    dropdown.addEventListener("click", (e) => {
-      const opt = e.target.closest(".option");
-      if (opt) {
-        dropdown.querySelector("span").innerHTML = opt.innerHTML;
-        dropdown.classList.remove("active");
-      }
-    });
-  }
-
-  setupDropdown("tier-dropdown");
-  setupDropdown("city-dropdown");
-  setupDropdown("food-dropdown");
-
-  window.onclick = () => document.querySelectorAll(".custom-select").forEach(el => el.classList.remove("active"));
+  ["tier-dropdown", "enchant-dropdown", "city-dropdown", "food-dropdown", "daily-dropdown"].forEach(setupDropdown);
+  window.onclick = () => document.querySelectorAll(".custom-select").forEach(s => s.classList.remove("active"));
 </script>
 </body>
 </html>
